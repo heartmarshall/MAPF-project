@@ -10,42 +10,19 @@ from PIL import Image, ImageDraw, ImageOps
 from IPython.display import Image as Img
 from IPython.display import display
 from sys import float_info
-
+from map_reading import read_map_from_movingai_file
 
 EPS = float_info.epsilon
 
 
 class Map:
-    '''
-    Square grid map class represents the environment for our moving agent
-        - width -- the number of columns in the grid
-        - height -- the number of rows in the grid
-        - cells -- the binary matrix, that represents the grid. 0 - cell is traversable, 1 - cell is blocked
-    '''
-
     def __init__(self):
-        '''
-        Default constructor
-        '''
-
         self._width = 0
         self._height = 0
         self._cells = []
     
 
     def read_from_string(self, cell_str, width, height):
-        '''
-        Converting a string (with '#' representing obstacles and '.' representing free cells) to a grid
-
-        Parameters
-        ----------
-        cell_str : str
-            String which contains map data
-        width : int
-            Number of grid columns
-        height : int
-            Number of grid rows
-        '''
         self._width = width
         self._height = height
         self._cells = [[0 for _ in range(width)] for _ in range(height)]
@@ -73,81 +50,19 @@ class Map:
     
 
     def set_grid_cells(self, width, height, grid_cells):
-        '''
-        Initialization of map by list of cells.
-
-        Parameters
-         ----------
-        width : int
-            Number of grid columns
-        height : int
-            Number of grid rows
-        grid_cells : list[list[int]]
-            Map matrix consisting of values of two types: 0 (traversable cells) and 1 (obstacles)
-        '''
-
         self._width = width
         self._height = height
         self._cells = grid_cells
 
 
     def in_bounds(self, i, j):
-        '''
-        Check if the cell is on a grid.
-
-        Parameters
-        ----------
-        i : int
-            The number of the column in which the cell is located
-        j : int
-            The number of the row in which the cell is located
-
-        Returns
-        -------
-        bool
-            Is the cell inside map bounds
-        '''
         return (0 <= j < self._width) and (0 <= i < self._height)
     
     def traversable(self, i, j):
-        '''
-        Check if the cell is not an obstacle.
-
-        Parameters
-        ----------
-        i : int
-            The number of the column in which the cell is located
-        j : int
-            The number of the row in which the cell is located
-
-        Returns
-        -------
-        bool
-            Is the cell traversable (true) or obstacle (false)
-        '''
-
         return not self._cells[i][j]
 
 
     def get_neighbors(self, i, j):
-        '''
-        Returns a list of neighbouring cells as (i, j) tuples. 
-        Fucntions should returns such neighbours, that allows only cardinal moves, 
-        but dissalows cutting corners and squezzing. 
-
-        Parameters
-        ----------
-        i : int
-            The number of the column in which the cell is located
-        j : int
-            The number of the row in which the cell is located
-
-        Returns
-        -------
-        neighbours : list[tuple[int, int]]
-            List of neighbours grid map (i, j) coordinates
-        '''
-
         neighbors = []
         delta = [[0, 1], [1, 0], [0, -1], [-1, 0]]
 
@@ -158,30 +73,11 @@ class Map:
         return neighbors
 
     def get_size(self):
-        '''
-        Returns the size of the map in cells
-
-        Returns
-        -------
-        tuple[int, int]
-            Size of the map in cells (height, width)
-        '''
         return (self._height, self._width)
 
 
 
 class Node:
-    '''
-    Node class represents a search node
-
-    - i, j: coordinates of corresponding grid element
-    - g: g-value of the node
-    - h: h-value of the node // always 0 for Dijkstra
-    - f: f-value of the node // always equal to g-value for Dijkstra
-    - parent: pointer to the parent-node 
-
-    '''
-    
 
     def __init__(self, i, j, g = 0, h = 0, f = None, parent = None):
         self.i = i
@@ -197,24 +93,14 @@ class Node:
         
     
     def __eq__(self, other):
-        '''
-        Estimating where the two search nodes are the same,
-        which is needed to detect dublicates in the search tree.
-        '''
         return (self.i == other.i) and (self.j == other.j) and (self.g == other.g)
     
     def __hash__(self):
-        '''
-        To implement CLOSED as set of nodes we need Node to be hashable.
-        '''
         ij = self.i, self.j
         return hash(ij)
 
 
     def __lt__(self, other): 
-        '''
-        Comparison between self and other. Returns is self < other (self has higher priority).
-        '''
         return (self.f < other.f) or (self.f == other.f and self.h < other.h)
         
         
