@@ -557,6 +557,8 @@ def run_with_order(traj_prev, id, starts, goals, search_func, map: Map, *args):
         goal = result[1]
         path = make_path(goal)[0]
         p_path = list_pair_from_list_nodes(path)
+    else:
+        return False, None
     return True, p_path
 
 

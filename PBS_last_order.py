@@ -341,7 +341,8 @@ def FixedOrderSearch(starts, goals, map:Map,*, order=None, search_func=astar_tim
             traj.append(p_path)
             traj_stopped.append((goals[order[agent]], steps))
         else:
-            print(f"agent {agent} has failed")
+            pass
+            # print(f"agent {agent} has failed")
     
     lengths = []
     for i in traj:
