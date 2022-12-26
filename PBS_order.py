@@ -383,6 +383,8 @@ def astar_timesteps(grid_map, ca_table, start_i, start_j, goal_i, goal_j, heuris
             nodes_created += 1
             if not ast.was_expanded(new_node):
                 ast.add_to_open(new_node)
+        if steps > 500:
+            break
     
     return False, None, steps, nodes_created, ast.OPEN, ast.CLOSED
     
@@ -561,7 +563,6 @@ def run_with_order(traj_prev, id, starts, goals, search_func, map: Map, *args):
 def PBS(starts, goals, search_func, map: Map, *args):
     order = [i for i in range(len(starts))]
 
-
     traj = []
     for index, agent in enumerate(order):
 
@@ -575,5 +576,7 @@ def PBS(starts, goals, search_func, map: Map, *args):
         if res:
             traj.append(p_path)
 
-
-    return traj
+    lengths = []
+    for i in traj:
+        lengths.append(len(i))
+    return traj, max(lengths)
