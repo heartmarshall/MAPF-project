@@ -4,6 +4,8 @@ from heapq import heappop, heappush, heapify
 from map import Map
 
 
+
+
 class Node:
 
     def __init__(self, i, j, g = 0, h = 0, f = None, parent = None):
