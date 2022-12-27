@@ -36,8 +36,6 @@ pip install pillow
 ## Наставники
 
 Yakovlev Konstantin Sergeevich
-
-- kyakovlev@hse.ru
 - Telegram: @KonstantinYakovlev
 
 ## Наши контакты
